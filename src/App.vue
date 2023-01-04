@@ -1,28 +1,49 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+<div class="container mrgnbtm">
+  <div>
+   <CreateUser @createUser="userCreate($event)" />
+  </div>
+  <div class="row mrgnbtm">
+    <DisplayUser :users="users"/>
+  </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import CreateUser from './components/CreateUser.vue'
+import DisplayUser from './components/DisplayUser.vue'
+import { getAllUsers, createUser } from './services/userService'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
-  }
-}
-</script>
+      CreateUser,
+      DisplayUser
+  },
+  data() {
+    return {
+      users: [],
+    };
+  },
+  
+  methods: {
+    getAllUsers() {
+      getAllUsers().then(response => {
+        console.log(response)
+        this.users = response
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+      })
+    },
+    userCreate(data) {
+      console.log('data:::', data)
+      createUser(data).then(response => {
+        console.log(response);
+        this.getAllUsers();
+      });
+    }
+  },
+  mounted () {
+    this.getAllUsers();
+  }
+};
+</script>
